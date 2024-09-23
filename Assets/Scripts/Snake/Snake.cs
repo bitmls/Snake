@@ -10,29 +10,20 @@ public class Snake : MonoBehaviour
 
     public Board board;
 
-    private Vector2Int direction = Vector2Int.left;
+    public Vector2Int direction = Vector2Int.left;
 
-    private float timer = 0;
-    public float duration = 1f;
+    public SnakeBody lastBodyTail;
 
-    private void Update()
+    public bool canChangeDir { get; private set; }
+
+    public void ClearSnakeBody()
     {
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-            ChangeDirection(Vector2Int.up);
-        else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-            ChangeDirection(Vector2Int.down);
-        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-            ChangeDirection(Vector2Int.left);
-        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-            ChangeDirection(Vector2Int.right);
-
-        timer += Time.deltaTime;
-
-        if (timer > duration)
+        for(int i = 0; i < bodys.Count; i++)
         {
-            timer = 0;
-            SnakeMove();
+            bodys[i].cell.body = null;
+            Destroy(bodys[i].gameObject);
         }
+        bodys.Clear();
     }
 
     public void CreateNewBody(BoardCell cell, SnakeBodyType type)
@@ -44,9 +35,15 @@ public class Snake : MonoBehaviour
         bodys.Add(newBody);
     }
 
-    private void ChangeDirection(Vector2Int dir)
+    public void ChangeDirection(Vector2Int dir)
     {
+        if ((direction == Vector2Int.up && dir == Vector2Int.down) ||
+            (direction == Vector2Int.down && dir == Vector2Int.up) ||
+            (direction == Vector2Int.left && dir == Vector2Int.right) ||
+            (direction == Vector2Int.right && dir == Vector2Int.left))
+        { return; }
         direction = dir;
+        canChangeDir = false;
     }
 
     public void SnakeMove()
@@ -54,14 +51,15 @@ public class Snake : MonoBehaviour
         BoardCell adjacentCell = board.GetAdjacentCell(bodys[0].cell, direction);
         if (adjacentCell != null)
         {
-            BoardCell fromCell;
-            BoardCell toCell = adjacentCell;
-            for (int i = 0; i < bodys.Count; i++)
+            lastBodyTail = bodys[bodys.Count - 1];
+            for (int i = bodys.Count - 1; i > 0; i--)
             {
-                fromCell = bodys[i].cell;
-                bodys[i].MoveBodyTo(toCell);
-                toCell = fromCell;
+                bodys[i].MoveBodyTo(bodys[i - 1].cell);
             }
+            bodys[0].MoveBodyTo(adjacentCell);
+
+            lastBodyTail.cell.body = null;
         }
+        canChangeDir = true;
     }
 }

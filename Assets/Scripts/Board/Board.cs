@@ -35,4 +35,15 @@ public class Board : MonoBehaviour
             return null;
         return grid.rows[dstPostion.y].cells[dstPostion.x];
     }
+
+    public BoardCell GetRamdomEmptyCell()
+    {
+        int index = Random.Range(0, grid.cells.Length);
+
+        while (grid.cells[index].occupied)
+        {
+            index = Random.Range(0, grid.cells.Length);
+        }
+        return grid.cells[index];
+    }
 }

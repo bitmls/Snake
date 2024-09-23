@@ -39,7 +39,6 @@ public class SnakeBody : MonoBehaviour
     {
         this.cell = cell;
         this.cell.body = this;
-
         transform.position = cell.transform.position;
     }
 }

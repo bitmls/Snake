@@ -8,5 +8,8 @@ public class BoardCell : MonoBehaviour
 
     public SnakeBody body { get; set; }
 
-    public bool occupied => body != null;
+    public Fruit fruit { get; set; }
+
+    public bool occupied => body != null || fruit != null;
+    public bool empty => body == null || fruit == null;
 }
