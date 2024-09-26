@@ -18729,6 +18729,7 @@ MonoBehaviour:
   bestScoreText: {fileID: 1560367672}
   NumberText: {fileID: 1880199643}
   gameOverCanvasGroup: {fileID: 1855628700}
+  spawnDuration: 5
 --- !u!4 &1355532150
 Transform:
   m_ObjectHideFlags: 0

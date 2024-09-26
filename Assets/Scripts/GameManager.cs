@@ -1,10 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,7 +10,7 @@ public class GameManager : MonoBehaviour
     public Fruits fruits;
 
     private float timer = 0;
-    public float duration = 0.2f;
+    public float duration = 0.15f;
 
     private int score = 0;
 
@@ -26,6 +23,9 @@ public class GameManager : MonoBehaviour
 
     private bool isGameOver = false;
 
+    private float spawnTimer = 0;
+    public float spawnDuration = 5;
+
     private void Start()
     {
         NewGame();
@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
             return;
 
         timer += Time.deltaTime;
+        spawnTimer += Time.deltaTime;
 
         if (timer > duration)
         {
@@ -46,6 +47,16 @@ public class GameManager : MonoBehaviour
 
             snake.SnakeMove();
             //CheckEmptyCellCount();
+        }
+
+        if (spawnTimer > spawnDuration)
+        {
+            spawnTimer = 0;
+
+            if (fruits.fruitList.Count < 3)
+            {
+                fruits.SpawnFruit(FruitType.BANANA);
+            }
         }
 
         SnakeChangeDirection();
@@ -71,6 +82,8 @@ public class GameManager : MonoBehaviour
 
         NumberText.enabled = false;
         //StartCoroutine(StartDelay(3.5f));
+
+        spawnTimer = 0;
 
         snake.CreateNewBody(board.grid.rows[7].cells[10], SnakeBodyType.Head);
         snake.CreateNewBody(board.grid.rows[7].cells[11], SnakeBodyType.Body);
@@ -123,9 +136,17 @@ public class GameManager : MonoBehaviour
         {
             if (snake.bodys[0].cell == fruits.fruitList[i].cell)
             {
+                FruitType type = fruits.fruitList[i].type;
                 fruits.RemoveFruit(i);
                 snake.CreateNewBody(snake.lastBodyTail.cell, SnakeBodyType.Body);
-                fruits.SpawnFruit(FruitType.APPLE);
+                if (type == FruitType.APPLE)
+                {
+                    fruits.SpawnFruit(FruitType.APPLE);
+                }
+                else if (type == FruitType.BANANA)
+                {
+                    StartCoroutine(SpeedUp(2));
+                }
                 ScoreAddValue();
             }
         }
@@ -217,5 +238,14 @@ public class GameManager : MonoBehaviour
         NumberText.enabled = false;
 
         isGameOver = false;
+    }
+
+    private IEnumerator SpeedUp(float seconds)
+    {
+        duration = 0.08f;
+
+        yield return new WaitForSeconds(seconds);
+
+        duration = 0.15f;
     }
 }
