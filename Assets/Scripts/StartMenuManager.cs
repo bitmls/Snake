@@ -7,7 +7,7 @@ public class StartMenuManager : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("Snake");
+        SceneManager.LoadScene("SnakePhone");
     }
 
     public void QuitGame()

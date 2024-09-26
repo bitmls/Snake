@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     private bool isGameOver = false;
 
     private float spawnTimer = 0;
-    public float spawnDuration = 5;
+    public float spawnDuration = 10;
 
     private void Start()
     {
@@ -247,5 +247,29 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(seconds);
 
         duration = 0.15f;
+    }
+
+    public void SnakeDirectionUp()
+    {
+        if (snake.direction != Vector2Int.up)
+            snake.direction = Vector2Int.down;
+    }
+
+    public void SnakeDirectionDown()
+    {
+        if (snake.direction != Vector2Int.down)
+            snake.direction = Vector2Int.up;
+    }
+
+    public void SnakeDirectionLeft()
+    {
+        if (snake.direction != Vector2Int.right)
+            snake.direction = Vector2Int.left;
+    }
+
+    public void SnakeDirectionRight()
+    {
+        if (snake.direction != Vector2Int.left)
+            snake.direction = Vector2Int.right;
     }
 }
